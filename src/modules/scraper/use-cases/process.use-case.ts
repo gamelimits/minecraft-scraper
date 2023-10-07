@@ -1,4 +1,5 @@
 import { environment } from '../../../infrastructure/config/environment.js';
+import { logger } from '../../../infrastructure/logger/logger.js';
 import { findPlayerIds } from '../utils/find-player-ids.js';
 import { scrapePlayerStats } from '../utils/scrape-player-stats.js';
 
@@ -12,11 +13,16 @@ export const processUseCase = async () => {
     return;
   }
 
-  await fetch(environment.BACKEND_URL, {
+  const response = await fetch(environment.BACKEND_URL, {
     method: 'POST',
     headers: {
       'x-api-key': environment.BACKEND_KEY,
     },
-    body: JSON.stringify({ stats: flattenStats }),
+    body: JSON.stringify({
+      players,
+      stats: flattenStats,
+    }),
   });
+
+  logger.info(`Pushed ${flattenStats.length} stat updates (response: ${response.status})`);
 };

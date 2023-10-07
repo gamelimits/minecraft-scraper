@@ -12,5 +12,7 @@ export const registerScraperModule: RegisterModule = () => {
     null,
     true,
     'Europe/Amsterdam',
+    undefined,
+    true,
   );
 };

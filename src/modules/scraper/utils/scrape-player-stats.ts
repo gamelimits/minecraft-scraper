@@ -13,7 +13,7 @@ export const scrapePlayerStats = async (id: string) => {
   const stats = Object.entries(payload.stats).reduce<PlayerStat[]>((accumulator, [category, items]) => {
     accumulator.push(
       ...Object.entries(items).map(([stat, value]) => ({
-        playerId: id,
+        minecraftId: id,
         category,
         stat,
         value,
@@ -25,7 +25,7 @@ export const scrapePlayerStats = async (id: string) => {
 
   // Skip unchanged values
   const cacheFilter = stats.filter((stat) => {
-    const key = `${stat.playerId}.${stat.category}.${stat.stat}`;
+    const key = `${stat.minecraftId}.${stat.category}.${stat.stat}`;
 
     if (memoryCache.get(key) === stat.value) {
       return false;
