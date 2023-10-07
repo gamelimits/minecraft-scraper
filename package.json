@@ -1,0 +1,28 @@
+{
+  "name": "@gamelimits/minecraft-scraper",
+  "private": true,
+  "maintainers": [
+    "Kevin van der Burgt <kevin@binarylab.nl>"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20.8.0",
+    "pnpm": ">=8.8.0"
+  },
+  "scripts": {
+    "dev": "node --import ./scripts/loader.js --watch ./src/main.ts",
+    "build": "rimraf dist && tsc",
+    "start": "node ./dist/main.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.3",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
