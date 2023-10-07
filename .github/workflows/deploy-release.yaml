@@ -1,0 +1,64 @@
+name: Build and deploy the gamelimits-minecraft-scraper
+
+on:
+  push:
+    branches:
+      - production
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: kevinvdburgt/gamelimits-minecraft-scraper
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Extract Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.action }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: packages/minecraft-scraper/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    name: Deployment
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - name: Deploy on production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ATM9_SSH_HOSTNAME }}
+          username: ${{ secrets.ATM9_SSH_USERNAME }}
+          key: ${{ secrets.ATM9_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.ATM9_SSH_PORT }}
+          script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io --username ${{ github.actor }} --password-stdin
+            cd /home/${{ secrets.ATM9_SSH_USERNAME }}/docker/minecraft-scraper && docker compose pull && docker compose down -v && docker compose up -d
+            docker logout ghcr.io
