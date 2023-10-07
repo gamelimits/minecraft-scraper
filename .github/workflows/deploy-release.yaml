@@ -3,7 +3,7 @@ name: Build and deploy the gamelimits-minecraft-scraper
 on:
   push:
     branches:
-      - production
+      - development
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: kevinvdburgt/gamelimits-minecraft-scraper
