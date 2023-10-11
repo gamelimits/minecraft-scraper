@@ -1,4 +1,4 @@
-name: Build and deploy the gamelimits-minecraft-scraper
+name: Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - development
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: kevinvdburgt/gamelimits-minecraft-scraper
+  IMAGE_NAME: gamelimits/minecraft-scraper
 
 jobs:
   build:

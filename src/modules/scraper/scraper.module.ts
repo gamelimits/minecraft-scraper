@@ -5,7 +5,7 @@ import { processUseCase } from './use-cases/process.use-case.js';
 export const registerScraperModule: RegisterModule = () => {
   // Crons
   new CronJob(
-    '* * * * *',
+    '* * * * * *',
     () => {
       void processUseCase();
     },
